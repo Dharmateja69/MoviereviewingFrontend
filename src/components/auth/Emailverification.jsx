@@ -17,7 +17,9 @@ export default function Emailverification() {
 
   const handleotpchange=({target},index)=>{
     const {value}=target;
-    // setotp([value]);
+    const newotp =[...otp];
+    newotp[index]=value.substring(value.length-1,value.length);
+    setotp([...newotp]);
     setActiveOtpindex(index+1);
   
   }
