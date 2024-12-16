@@ -1,4 +1,5 @@
 import React from "react";
+import { useTheme } from "../../hooks";
 import Container from "../Container";
 import CoustomLinks from "../CoustomLinks";
 import Forminput from "../form/Forminput";
@@ -6,6 +7,10 @@ import Submit from "../form/Submit";
 import Title from "../form/Title";
 
 export default function Singin() {
+const theme = useTheme();
+console.log(theme);
+
+
   return (
     <div className="fixed bg-primary inset-0 -z-10 flex justify-center items-center">
       <Container>
