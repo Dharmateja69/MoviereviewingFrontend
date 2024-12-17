@@ -18,7 +18,7 @@ export default function NavBar() {
             <li>
               <button
                 onClick={toggleTheme} // Ensure `toggleTheme` is a valid function
-                className="bg-dark-subtle p-1 rounded"
+                className=" dark:bg-light-subtle bg-dark-subtle p-1 rounded"
               >
                 <BsSunFill className="text-white" size={24} />
               </button>
