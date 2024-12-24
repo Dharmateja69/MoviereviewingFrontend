@@ -1,12 +1,27 @@
-//14-12-24
 import React, { useState } from "react";
 import { commonModalClasses } from "../../utils/theme";
 import Container from "../Container";
-import CoustomLinks from "../CoustomLinks";
+import CustomLinks from "../CoustomLinks";
 import FormContainer from "../form/FormContainer";
-import Forminput from "../form/Forminput";
+import FormInput from "../form/Forminput";
 import Submit from "../form/Submit";
 import Title from "../form/Title";
+
+const validateUserInfo = ({ name, email, password }) => {
+  const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const isValidName = /^[a-zA-Z\s]+$/;
+
+  if (!name.trim()) return { ok: false, error: "Name is missing!" };
+  if (!isValidName.test(name)) return { ok: false, error: "Invalid name!" };
+
+  if (!email.trim()) return { ok: false, error: "Email is missing!" };
+  if (!isValidEmail.test(email)) return { ok: false, error: "Invalid email format!" };
+
+  if (!password.trim()) return { ok: false, error: "Password is missing!" };
+  if (password.length < 8) return { ok: false, error: "Password must be at least 8 characters long!" };
+
+  return { ok: true };
+};
 
 export default function Signup() {
   const [userInfo, setUserInfo] = useState({
@@ -15,39 +30,41 @@ export default function Signup() {
     password: "",
   });
 
-  const handleChange=({target})=>{
-    const {value,name}=target;
-    setUserInfo({...userInfo,[name]:value})
-  }
-
-  
-  const handlesubmit=(e)=>{
-   e.preventDefault();
-   console.log(userInfo);
+  const handleChange = ({ target }) => {
+    const { value, name } = target;
+    setUserInfo({ ...userInfo, [name]: value });
   };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const { ok, error } = validateUserInfo(userInfo);
+    if (!ok) return console.log(error);
+    console.log(userInfo);
+  };
+
   const { name, email, password } = userInfo;
 
   return (
     <FormContainer>
       <Container>
-        <form onSubmit={handlesubmit} className={commonModalClasses + " w-72"}>
+        <form onSubmit={handleSubmit} className={commonModalClasses + " w-72"}>
           <Title>Signup</Title>
-          <Forminput
-          onChange={handleChange}
+          <FormInput
+            onChange={handleChange}
             value={name}
             label="Name"
-            placeholder="jhone"
+            placeholder="John"
             name="name"
           />
-          <Forminput
-          onChange={handleChange}
+          <FormInput
+            onChange={handleChange}
             value={email}
             label="Email"
-            placeholder="jhone@gmail.com"
+            placeholder="john@gmail.com"
             name="email"
           />
-          <Forminput
-          onChange={handleChange}
+          <FormInput
+            onChange={handleChange}
             value={password}
             label="Password"
             placeholder="********"
@@ -55,10 +72,8 @@ export default function Signup() {
           />
           <Submit value="Signup" />
           <div className="flex justify-between">
-            <CoustomLinks to="/auth/forget-password">
-              Forget password
-            </CoustomLinks>
-            <CoustomLinks to="/auth/Signin">Signin</CoustomLinks>
+            <CustomLinks to="/auth/forget-password">Forgot password</CustomLinks>
+            <CustomLinks to="/auth/signin">Signin</CustomLinks>
           </div>
         </form>
       </Container>
