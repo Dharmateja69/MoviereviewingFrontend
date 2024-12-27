@@ -1,4 +1,7 @@
 import React, { useState } from "react";
+
+import { useNavigate } from "react-router-dom";
+
 import { createUser } from "../../api/auth";
 import { commonModalClasses } from "../../utils/theme";
 import Container from "../Container";
@@ -16,10 +19,12 @@ const validateUserInfo = ({ name, email, password }) => {
   if (!isValidName.test(name)) return { ok: false, error: "Invalid name!" };
 
   if (!email.trim()) return { ok: false, error: "Email is missing!" };
-  if (!isValidEmail.test(email)) return { ok: false, error: "Invalid email format!" };
+  if (!isValidEmail.test(email))
+    return { ok: false, error: "Invalid email format!" };
 
   if (!password.trim()) return { ok: false, error: "Password is missing!" };
-  if (password.length < 8) return { ok: false, error: "Password must be at least 8 characters long!" };
+  if (password.length < 8)
+    return { ok: false, error: "Password must be at least 8 characters long!" };
 
   return { ok: true };
 };
@@ -31,6 +36,8 @@ export default function Signup() {
     password: "",
   });
 
+  const navigate = useNavigate();
+
   const handleChange = ({ target }) => {
     const { value, name } = target;
     setUserInfo({ ...userInfo, [name]: value });
@@ -40,10 +47,15 @@ export default function Signup() {
     e.preventDefault();
     const { ok, error } = validateUserInfo(userInfo);
     if (!ok) return console.log(error);
-   const response = await createUser(userInfo);
-   if (response.error) return console.log(error);
-   console.log(response.user);
+    const response = await createUser(userInfo);
+    if (response.error) return console.log(error);
 
+    navigate("/auth/verification", {
+      state: { user: response.user },
+      replace: true,
+    });
+
+    console.log(response.user);
   };
 
   const { name, email, password } = userInfo;
@@ -76,7 +88,9 @@ export default function Signup() {
           />
           <Submit value="Signup" />
           <div className="flex justify-between">
-            <CustomLinks to="/auth/forget-password">Forgot password</CustomLinks>
+            <CustomLinks to="/auth/forget-password">
+              Forgot password
+            </CustomLinks>
             <CustomLinks to="/auth/signin">Signin</CustomLinks>
           </div>
         </form>

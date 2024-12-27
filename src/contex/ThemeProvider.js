@@ -33,6 +33,6 @@ const updateTheme = (theme, themetoremove) => {
   if (themetoremove) document.documentElement.classList.remove(themetoremove);
 
   document.documentElement.classList.add(theme);
-  console.log(document.documentElement);
+  // console.log(document.documentElement);
   localStorage.setItem("theme", theme);
 };
