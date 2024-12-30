@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from "react";
-
 import { useLocation, useNavigate } from "react-router-dom";
 import { commonModalClasses } from "../../utils/theme";
 import Container from "../Container";
@@ -9,16 +8,25 @@ import Title from "../form/Title";
 
 const OTP_length = 6;
 
+const isValidOtp = (otp) => {
+  let valid = true;
+  for (let val of otp) {
+    if (isNaN(parseInt(val))) {
+      valid = false;
+      break;
+    }
+  }
+  return valid;
+};
+
 export default function Emailverification() {
   const [otp, setotp] = useState(new Array(OTP_length).fill(""));
-
   const [activeOtpIndex, setActiveOtpindex] = useState(0);
 
+  const { state } = useLocation();
+  const user = state?.user;
 
-  const {state} = useLocation();
- const user = state?.user
-
- const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const focusNextInputField = (index) => {
     setActiveOtpindex(index + 1);
@@ -64,23 +72,24 @@ export default function Emailverification() {
     }
   };
 
+  const handlesubmit = (e) => {
+    e.preventDefault();
+    if (!isValidOtp(otp)) {
+      return console.log("Invalid OTP");
+    }
+    console.log("OTP Array: ", otp); // Log OTP as an array
+  };
+
   const inputRef = useRef();
 
   useEffect(() => {
     inputRef.current?.focus();
   }, [activeOtpIndex]);
 
-
-  useEffect(()=>
-  {
-    if(!user)navigate("*");
-  })
-  // if(!user) return null;
-
   return (
     <FormContainer>
       <Container>
-        <form className={commonModalClasses}>
+        <form onSubmit={handlesubmit} className={commonModalClasses}>
           <div>
             <Title>Please Enter the OTP to verify your account</Title>
             <p className="text-center dark:text-dark-subtle text-light-subtle">
@@ -92,19 +101,19 @@ export default function Emailverification() {
               return (
                 <input
                   ref={activeOtpIndex === index ? inputRef : null}
-                  type="text" // Use "text" to avoid spin buttons
+                  type="text"
                   value={otp[index] || ""}
                   onChange={(e) => handleotpchange(e, index)}
                   onKeyDown={(e) => handleKeyDown(e, index)}
                   key={index}
                   maxLength={1}
-                  className="w-12 h-12 border-2 dark:border-dark-subtle  border-light-subtle dark:focus:border-white focus:border-primary bg-transparent rounded outline-none text-center dark:text-white text-primary font-semibold text-xl spin-button-none"
+                  className="w-12 h-12 border-2 dark:border-dark-subtle border-light-subtle dark:focus:border-white focus:border-primary bg-transparent rounded outline-none text-center dark:text-white text-primary font-semibold text-xl spin-button-none"
                 />
               );
             })}
           </div>
           <div>
-            <Submit value="Send Link" />
+            <Submit value="verify account" />
           </div>
         </form>
       </Container>
