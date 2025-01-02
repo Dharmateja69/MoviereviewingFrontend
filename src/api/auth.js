@@ -7,11 +7,11 @@ export const createUser = async (userInfo) => {
     return data;
   } catch (error) {
 
-    const {response} =error;
+    const { response } = error;
 
-    if(response?.data) return response.data;
+    if (response?.data) return response.data;
 
-    return {error:error.message || error};
+    return { error: error.message || error };
   }
 };
 
@@ -21,12 +21,12 @@ export const verifyUserEmail = async (userInfo) => {
 
     return data;
   } catch (error) {
+    console.log(error.response.data)
+    const { response } = error;
 
-    const {response} =error;
+    if (response?.data) return response.data;
 
-    if(response?.data) return response.data;
-
-    return {error:error.message || error};
+    return { error: error.message || error };
   }
 };
 
