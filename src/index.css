@@ -1,8 +1,28 @@
 /* // 14-12-24 */
 .spin-button-none::-webkit-outer-spin-button,
-.spin-button-none::-webkit-inner-spin-button{
-    appearance:none;
+.spin-button-none::-webkit-inner-spin-button {
+  appearance: none;
 }
+
+.bounce {
+  animation: bounce 0.5s infinite;
+}
+@keyframes bounce {
+  from,
+  to {
+    transform: scale(1, 1);
+  }
+  25% {
+    transform: scale(0.9, 1.1);
+  }
+  50% {
+    transform: scale(1.1, 0.9);
+  }
+  75% {
+    transform: scale(0.95, 1.05);
+  }
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
