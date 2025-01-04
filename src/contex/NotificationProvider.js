@@ -1,31 +1,50 @@
-import React, { createContext } from 'react'
+import React, { createContext, useState } from "react";
 
-const NotificationContext = createContext()
+export const NotificationContext = createContext();
 
 
+let timeoutId;
 export default function NotificationProvider({ children }) {
+    const [notification, setNotification] = useState("");
 
+    const [classes, setClasess] = useState("");
+    const updateNotifcation = (type, value) => {
 
-    const updateNotiifcation = () => {
+        if (timeoutId) clearTimeout(timeoutId)
+        switch (type) {
+            case "error":
+                setClasess("bg-red-500");
 
-    }
+                break;
+            case "success":
+                setClasess("bg-green-500");
+
+                break;
+            case "warning":
+                setClasess("bg-orange-500");
+
+                break;
+
+            default:
+                setClasess("bg-red-500");
+        }
+        setNotification(value)
+        timeoutId = setTimeout(() => {
+            setNotification('')
+        }, 3000)//so after 3 seconds it will remove the notfication
+    };
 
     return (
-
-        <NotificationContext.Provider>
-
+        <NotificationContext.Provider value={{ updateNotifcation }}>
             {children}
-            <div className="fixed left-1/2 -translate-x-1/2 top-24">
-                <div className="bounce shadow-md shadow-gray-400 bg-red-400 rounded" >
-                    <p className="text-white px-4 py-2 font-semibold"></p>
-                    Something went wrong
+            {notification && <div className="fixed left-1/2 -translate-x-1/2 top-24">
+                <div className="bounce shadow-md shadow-gray-400 bg-red-400 rounded">
+                    <p className={classes + "text-white px-4 py-2 font-semibold"}>
+                        {notification}
+                    </p>
 
                 </div>
-
-
-            </div>
-
-
-        </NotificationContext.Provider >
-    )
+            </div>}
+        </NotificationContext.Provider>
+    );
 }

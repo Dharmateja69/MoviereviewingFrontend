@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import App from './App';
+import NotificationProvider from './contex/NotificationProvider';
 import ThemeProvider from './contex/ThemeProvider';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
@@ -11,12 +12,15 @@ root.render(
   <React.StrictMode>
     {/* 14-12-24 */}
     <BrowserRouter>
-    <ThemeProvider>
-    <App />
-    </ThemeProvider>
-    
+      <NotificationProvider>
+        <ThemeProvider>
+          <App />
+        </ThemeProvider>
+
+      </NotificationProvider>
+
     </BrowserRouter>
-   
+
   </React.StrictMode>
 );
 

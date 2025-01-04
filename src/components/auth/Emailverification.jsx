@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { verifyUserEmail } from "../../api/auth";
+import { useNotification } from "../../hooks";
 import { commonModalClasses } from "../../utils/theme";
 import Container from "../Container";
 import FormContainer from "../form/FormContainer";
@@ -25,6 +26,9 @@ export default function Emailverification() {
 
   const { state } = useLocation();
   const user = state?.user;
+
+  // Correctly initialize the notification function using the hook
+  const { updateNotifcation } = useNotification();
 
   const focusNextInputField = (index) => {
     setActiveOtpIndex(index + 1);
@@ -64,7 +68,8 @@ export default function Emailverification() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!isValidOtp(otp)) {
-      return console.log("Invalid OTP");
+      updateNotifcation("error", "Invalid OTP"); // Notify about invalid OTP
+      return;
     }
 
     const { error, message } = await verifyUserEmail({
@@ -72,8 +77,8 @@ export default function Emailverification() {
       userId: user.id,
     });
 
-    if (error) return console.log(error);
-    console.log(message);
+    if (error) return updateNotifcation("error", error);
+    updateNotifcation("success", message);
   };
 
   const inputRef = useRef();
