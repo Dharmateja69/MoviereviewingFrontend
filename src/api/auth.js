@@ -17,6 +17,22 @@ export const createUser = async (userInfo) => {
 
 export const verifyUserEmail = async (userInfo) => {
   try {
+    const { data } = await client.post("/user/signin", userInfo);
+
+    return data;
+  } catch (error) {
+    console.log(error.response.data)
+    const { response } = error;
+
+    if (response?.data) return response.data;
+
+    return { error: error.message || error };
+  }
+};
+
+
+export const sigInUser = async (userInfo) => {
+  try {
     const { data } = await client.post("/user/verify-email", userInfo);
 
     return data;
@@ -29,4 +45,5 @@ export const verifyUserEmail = async (userInfo) => {
     return { error: error.message || error };
   }
 };
+
 
