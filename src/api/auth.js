@@ -6,7 +6,6 @@ export const createUser = async (userInfo) => {
 
     return data;
   } catch (error) {
-
     const { response } = error;
 
     if (response?.data) return response.data;
@@ -17,33 +16,28 @@ export const createUser = async (userInfo) => {
 
 export const verifyUserEmail = async (userInfo) => {
   try {
-    const { data } = await client.post("/user/signin", userInfo);
+    console.log("Sending OTP verification request:", userInfo);
 
-    return data;
-  } catch (error) {
-    console.log(error.response.data)
-    const { response } = error;
-
-    if (response?.data) return response.data;
-
-    return { error: error.message || error };
-  }
-};
-
-
-export const sigInUser = async (userInfo) => {
-  try {
     const { data } = await client.post("/user/verify-email", userInfo);
-
     return data;
   } catch (error) {
-    console.log(error.response.data)
-    const { response } = error;
+    console.error("OTP verification failed:", error.response?.data); // Debugging
 
+    const { response } = error;
     if (response?.data) return response.data;
 
     return { error: error.message || error };
   }
 };
 
+export const signInUser = async (userInfo) => {
+  try {
+    const { data } = await client.post("/user/sign-in", userInfo);
+    return data;
+  } catch (error) {
+    const { response } = error;
+    if (response?.data) return response.data;
 
+    return { error: error.message || error };
+  }
+};

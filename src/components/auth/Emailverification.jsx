@@ -20,15 +20,28 @@ const isValidOtp = (otp) => {
   return true;
 };
 
-export default function Emailverification() {
+export default function EmailVerification() {
   const [otp, setOtp] = useState(new Array(OTP_length).fill(""));
   const [activeOtpIndex, setActiveOtpIndex] = useState(0);
 
   const { state } = useLocation();
   const user = state?.user;
 
-  // Correctly initialize the notification function using the hook
+  const inputRef = useRef();
+
+  // Initialize the notification function using the hook unconditionally
   const { updateNotifcation } = useNotification();
+
+  // useEffect should always run, so it is moved before the early return
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, [activeOtpIndex]);
+
+  // Early return handled AFTER all hooks
+  if (!user || !user.email) {
+    updateNotifcation("error", "User is not defined or invalid");
+    return null; // Return null to render nothing if user is invalid
+  }
 
   const focusNextInputField = (index) => {
     setActiveOtpIndex(index + 1);
@@ -70,21 +83,20 @@ export default function Emailverification() {
     if (!isValidOtp(otp)) {
       return updateNotifcation("error", "Invalid OTP"); // Notify about invalid OTP
     }
-    //submit otp
-    const { error, message } = await verifyUserEmail({
+    // Submit OTP
+    const {
+      error,
+      message,
+      user: userResponse,
+    } = await verifyUserEmail({
       OTP: otp.join(""),
       userId: user.id,
     });
 
     if (error) return updateNotifcation("error", error);
     updateNotifcation("success", message);
+    localStorage.setItem("auth-token", userResponse.token);
   };
-
-  const inputRef = useRef();
-
-  useEffect(() => {
-    inputRef.current?.focus();
-  }, [activeOtpIndex]);
 
   return (
     <FormContainer>

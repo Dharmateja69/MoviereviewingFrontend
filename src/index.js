@@ -1,26 +1,21 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import { BrowserRouter } from 'react-router-dom';
-import App from './App';
-import NotificationProvider from './contex/NotificationProvider';
-import ThemeProvider from './contex/ThemeProvider';
-import './index.css';
-import reportWebVitals from './reportWebVitals';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import { BrowserRouter } from "react-router-dom";
+import App from "./App";
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+import ContextProvider from "./contex/index";
+import "./index.css";
+import reportWebVitals from "./reportWebVitals";
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     {/* 14-12-24 */}
     <BrowserRouter>
-      <NotificationProvider>
-        <ThemeProvider>
-          <App />
-        </ThemeProvider>
-
-      </NotificationProvider>
-
+      <ContextProvider>
+        <App />
+      </ContextProvider>
     </BrowserRouter>
-
   </React.StrictMode>
 );
 
