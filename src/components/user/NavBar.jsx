@@ -1,11 +1,13 @@
 import React from "react";
 import { BsSunFill } from "react-icons/bs";
 import { Link } from "react-router-dom";
-import { useTheme } from "../../hooks";
+import { useAuth, useTheme } from "../../hooks";
 import Container from "../Container";
 
 export default function NavBar() {
   const { toggleTheme } = useTheme(); // Ensure `toggleTheme` is destructured correctly
+  const { authInfo, handlelogout } = useAuth();
+  const { isLoggedIn } = authInfo;
 
   return (
     <div className="bg-secondary shadow-gray-500">
@@ -31,9 +33,21 @@ export default function NavBar() {
               />
             </li>
             <li>
-              <Link to="/auth/signin" className="text-white font-semibold text-lg">
-                Login
-              </Link>
+              {isLoggedIn ? (
+                <button
+                  onClick={handlelogout}
+                  className="text-white font-semibold text-lg"
+                >
+                  Log out
+                </button>
+              ) : (
+                <Link
+                  to="/auth/signin"
+                  className="text-white font-semibold text-lg"
+                >
+                  Login
+                </Link>
+              )}
             </li>
           </ul>
         </div>

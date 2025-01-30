@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
+import { useNavigate } from "react-router";
 import { useAuth, useNotification } from "../../hooks";
 import { commonModalClasses } from "../../utils/theme";
 import Container from "../Container";
@@ -14,9 +15,13 @@ export default function Singin() {
     email: "",
     password: "",
   });
+
+  const navigate = useNavigate();
   const { updateNotifcation } = useNotification();
 
   const { handleLogin, authInfo } = useAuth();
+  // console.log(authInfo);
+  const { isPending, isLoggedIn } = authInfo;
   console.log(authInfo);
   const handleChange = ({ target }) => {
     const { value, name } = target;
@@ -47,6 +52,11 @@ export default function Singin() {
     return { ok: true };
   };
 
+  useEffect(() => {
+    if (isLoggedIn)
+      // we want to move our user some were else
+      navigate("/");
+  }, [isLoggedIn]);
   return (
     <FormContainer>
       <Container>
@@ -68,7 +78,7 @@ export default function Singin() {
             name="password"
             type="password"
           />
-          <Submit value="Sign in" />
+          <Submit value="Sign in" busy={isPending} />
           <div className="flex justify-between">
             <CoustomLinks to="/auth/forget-password">
               Forget password

@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { useNavigate } from "react-router-dom";
 
 import { createUser } from "../../api/auth";
-import { useNotification } from "../../hooks";
+import { useAuth, useNotification } from "../../hooks";
 import { commonModalClasses } from "../../utils/theme";
 import Container from "../Container";
 import CustomLinks from "../CoustomLinks";
@@ -38,6 +38,8 @@ export default function Signup() {
   });
 
   const navigate = useNavigate();
+  const { authInfo } = useAuth();
+  const { isLoggedIn } = authInfo;
 
   const { updateNotifcation } = useNotification();
 
@@ -62,6 +64,11 @@ export default function Signup() {
   };
 
   const { name, email, password } = userInfo;
+  useEffect(() => {
+    if (isLoggedIn)
+      // we want to move our user some were else
+      navigate("/");
+  }, [isLoggedIn]);
 
   return (
     <FormContainer>

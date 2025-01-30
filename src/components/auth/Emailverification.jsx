@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { verifyUserEmail } from "../../api/auth";
-import { useNotification } from "../../hooks";
+import { useAuth, useNotification } from "../../hooks";
 import { commonModalClasses } from "../../utils/theme";
 import Container from "../Container";
 import FormContainer from "../form/FormContainer";
@@ -26,17 +26,22 @@ export default function EmailVerification() {
 
   const { state } = useLocation();
   const user = state?.user;
+  const { isAuth, authInfo } = useAuth();
+  const { isLoggedIn } = authInfo;
 
   const inputRef = useRef();
 
   // Initialize the notification function using the hook unconditionally
   const { updateNotifcation } = useNotification();
-
+  const navigate = useNavigate();
   // useEffect should always run, so it is moved before the early return
   useEffect(() => {
     inputRef.current?.focus();
   }, [activeOtpIndex]);
-
+  useEffect(() => {
+    if (!user) navigate("/not-found");
+    if (isLoggedIn) navigate("/");
+  }, [user, isLoggedIn, navigate]);
   // Early return handled AFTER all hooks
   if (!user || !user.email) {
     updateNotifcation("error", "User is not defined or invalid");
@@ -96,6 +101,7 @@ export default function EmailVerification() {
     if (error) return updateNotifcation("error", error);
     updateNotifcation("success", message);
     localStorage.setItem("auth-token", userResponse.token);
+    isAuth();
   };
 
   return (
