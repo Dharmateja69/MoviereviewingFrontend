@@ -21,7 +21,7 @@ function App() {
         <Route path="/auth/verification" element={<Emailverification />} />
         <Route path="/auth/forget-password" element={<ForgetPassword />} />
 
-        <Route path="/auth/confirm-password" element={<ConfirmPassword />} />
+        <Route path="/auth/reset-password" element={<ConfirmPassword />} />
         <Route path="*" element={<Notfound />} />
 
 

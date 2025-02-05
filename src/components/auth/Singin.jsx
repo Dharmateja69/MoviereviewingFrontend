@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 
 import { useNavigate } from "react-router";
 import { useAuth, useNotification } from "../../hooks";
+import { isValidEmail } from "../../utils/Helper";
 import { commonModalClasses } from "../../utils/theme";
 import Container from "../Container";
 import CoustomLinks from "../CoustomLinks";
@@ -36,7 +37,7 @@ export default function Singin() {
   };
 
   const validateUserInfo = ({ email, password }) => {
-    const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    // const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (!email.trim()) return { ok: false, error: "Email is missing!" };
     if (!isValidEmail.test(email))
