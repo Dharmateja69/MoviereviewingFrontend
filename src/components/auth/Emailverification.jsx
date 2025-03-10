@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { verifyUserEmail } from "../../api/auth";
+import { resendEmailVerificationToken, verifyUserEmail } from "../../api/auth";
 import { useAuth, useNotification } from "../../hooks";
 import { commonModalClasses } from "../../utils/theme";
 import Container from "../Container";
@@ -27,8 +27,8 @@ export default function EmailVerification() {
   const { state } = useLocation();
   const user = state?.user;
   const { isAuth, authInfo } = useAuth();
-  const { isLoggedIn } = authInfo;
-
+  const { isLoggedIn, profile } = authInfo;
+  const isVerified = profile?.isVerified ?? false;
   const inputRef = useRef();
 
   // Initialize the notification function using the hook unconditionally
@@ -40,7 +40,7 @@ export default function EmailVerification() {
   }, [activeOtpIndex]);
   useEffect(() => {
     if (!user) navigate("/not-found");
-    if (isLoggedIn) navigate("/");
+    if (isLoggedIn && isVerified) navigate("/");
   }, [user, isLoggedIn, navigate]);
   // Early return handled AFTER all hooks
   if (!user || !user.email) {
@@ -66,6 +66,11 @@ export default function EmailVerification() {
 
       if (value) focusNextInputField(index);
     }
+  };
+  const handleOTPResend = async () => {
+    const { error, message } = await resendEmailVerificationToken(user.id);
+    if (error) return updateNotifcation("error", error);
+    updateNotifcation("success", message);
   };
 
   const handleKeyDown = ({ key }, index) => {
@@ -130,6 +135,13 @@ export default function EmailVerification() {
           </div>
           <div>
             <Submit value="Verify Account" />
+            <button
+              type="button"
+              onClick={handleOTPResend}
+              className="dark:text-white text-blue-500 font-semibold hover:underline mt-2"
+            >
+              I don't have OTP
+            </button>
           </div>
         </form>
       </Container>

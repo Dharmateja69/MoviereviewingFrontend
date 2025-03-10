@@ -28,6 +28,7 @@ export default function NotificationProvider({ children }) {
         }, 3000); // Notification disappears after 3 seconds
     };
 
+
     return (
         <NotificationContext.Provider value={{ updateNotifcation }}>
             {children}
@@ -36,7 +37,10 @@ export default function NotificationProvider({ children }) {
                     <div
                         className={`bounce shadow-md shadow-gray-400 ${classes} rounded`} // Dynamic class
                     >
-                        <p className="text-white px-4 py-2 font-semibold">{notification}</p>
+                        <p className="text-white px-4 py-2 font-semibold">
+                            {notification}
+                        </p>
+
                     </div>
                 </div>
             )}

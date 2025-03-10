@@ -44,12 +44,14 @@ export const signInUser = async (userInfo) => {
 
 export const getIsAuth = async (token) => {
   try {
+    // console.log("Sending request with token:", token);
     const { data } = await client.get("/user/is-auth", {
       headers: {
         Authorization: 'Bearer ' + token,
         accept: "application/json",
       }
     });
+
     return data;
   } catch (error) {
     const { response } = error;
@@ -66,19 +68,45 @@ export const forgetPassword = async (email) => {
     return data;
   } catch (error) {
     if (error.response?.data) {
-      return error.response.data;  // ✅ Return server error message if available
+      return error.response.data;
     }
-    return { error: error.message || "Something went wrong!" }; // ✅ Improved fallback message
+    return { error: error.message || "Something went wrong!" };
   }
 };
 export const verifyPasswordResetoken = async (token, userId) => {
   try {
     const { data } = await client.post("/user/verify-pass-reset-token", { token, userId });
+    console.log(data.token, data.userId)
     return data;
   } catch (error) {
     if (error.response?.data) {
-      return error.response.data;  // ✅ Return server error message if available
+      return error.response.data;
     }
-    return { error: error.message || "Something went wrong!" }; // ✅ Improved fallback message
+    return { error: error.message || "Something went wrong!" };
   }
 };
+
+export const resetpassword = async (passwordinfo) => {
+  try {
+    const { data } = await client.post("/user/reset-password", passwordinfo);
+    return data;
+  } catch (error) {
+    if (error.response?.data) {
+      return error.response.data;
+    }
+    return { error: error.message || "Something went wrong!" };
+  }
+};
+
+export const resendEmailVerificationToken = async (userId) => {
+  try {
+    const { data } = await client.post("/user/resend-email-verfication-token", { userId });
+    return data;
+  } catch (error) {
+    if (error.response?.data) {
+      return error.response.data;
+    }
+    return { error: error.message || "Something went wrong!" };
+  }
+};
+

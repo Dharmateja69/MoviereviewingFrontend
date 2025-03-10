@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 
 import { createUser } from "../../api/auth";
 import { useAuth, useNotification } from "../../hooks";
-import { isValidEmail } from "../../utils/Helper";
 import { commonModalClasses } from "../../utils/theme";
 import Container from "../Container";
 import CustomLinks from "../CoustomLinks";
@@ -14,7 +13,7 @@ import Submit from "../form/Submit";
 import Title from "../form/Title";
 
 const validateUserInfo = ({ name, email, password }) => {
-  // const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const isValidName = /^[a-zA-Z\s]+$/;
 
   if (!name.trim()) return { ok: false, error: "Name is missing!" };

@@ -1,5 +1,6 @@
 import React, { createContext, useEffect, useState } from "react";
 import { getIsAuth, signInUser } from "../api/auth";
+import { useNotification } from "../hooks";
 
 export const AuthContext = createContext();
 
@@ -12,25 +13,28 @@ const defaultAuthInfo = {
 
 export default function AuthProvider({ children }) {
     const [authInfo, setauthInfo] = useState({ ...defaultAuthInfo });
+    const { updateNotifcation } = useNotification();
 
     const handleLogin = async (email, password) => {
-        setauthInfo({ ...authInfo, isPending: true });
+        setauthInfo((prev) => ({ ...prev, isPending: true }));
         try {
             const { error, user } = await signInUser({ email, password });
 
             // Handle API error
             if (error) {
-                setauthInfo({
-                    ...authInfo,
+                console.log(error)
+                updateNotifcation("error", error.message);
+                return setauthInfo((prev) => ({
+                    ...prev,
                     isPending: false,
-                    error,
-                });
-                return;
+                    error: error.message,
+                }));
+
             }
 
             // Set user profile upon success
             setauthInfo({
-                profile: user, // Correctly assign the user object
+                profile: user,
                 isLoggedIn: true,
                 isPending: false,
                 error: "",
@@ -38,46 +42,50 @@ export default function AuthProvider({ children }) {
 
             localStorage.setItem("auth-token", user.token);
         } catch (err) {
-            setauthInfo({
-                ...authInfo,
+            setauthInfo((prev) => ({
+                ...prev,
                 isPending: false,
                 error: "An unexpected error occurred.",
-            });
+            }));
         }
     };
 
     const isAuth = async () => {
-        const token = localStorage.getItem('auth-token')
+        const token = localStorage.getItem("auth-token");
         if (!token) return;
-        setauthInfo({
-            ...authInfo,
-            isPending: true
-        })
-        const { error, user } = await getIsAuth(token)
 
-        if (error) return setauthInfo({
-            ...authInfo,
-            isPending: false, error
-        })
+        setauthInfo((prev) => ({ ...prev, isPending: true }));
+
+        const { error, user } = await getIsAuth(token);
+
+        if (error) {
+            updateNotifcation("error", error);
+            return setauthInfo((prev) => ({
+                ...prev,
+                isPending: false,
+                error,
+            }));
+        }
+
         setauthInfo({
-            profile: user, // Correctly assign the user object
+            profile: user,
             isLoggedIn: true,
             isPending: false,
             error: "",
         });
-
-    }
-
+    };
     const handlelogout = () => {
-        localStorage.removeItem('auth-token')
-        setauthInfo({ ...defaultAuthInfo })
-    }
+        localStorage.removeItem("auth-token");
+        setauthInfo({ ...defaultAuthInfo });
+    };
+
     useEffect(() => {
-        isAuth()
-    }, [])
+        isAuth();
+    }, []);
+
     return (
         <AuthContext.Provider
-            value={{ authInfo, handleLogin, isAuth, handlelogout }}
+            value={{ authInfo, handleLogin, handlelogout, isAuth }}
         >
             {children}
         </AuthContext.Provider>
